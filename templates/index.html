@@ -1,80 +1,122 @@
 <!DOCTYPE html>
-<html>
-  <head>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>✂️ Remove Background</title>
     <style>
-      body {
-        height: 100vh;
-        display: flex;
+        body {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background-color: #f5f5f5;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
 
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-      }
+        .drop-zone {
+            border: 2px dashed #007bff;
+            padding: 20px;
+            width: 80vw;
+            max-width: 400px; /* Ensures it's not too wide on larger screens */
+            height: 40vh;
+            max-height: 300px; /* Adjusts the height for a more consistent appearance */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            background-color: #fff;
+            border-radius: 10px; /* Added for better aesthetics */
+        }
 
-      .drop-zone {
-        border: 2px dashed #ccc;
-        padding: 20px;
-        width: 80vw;
-        height: 80vh;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-      }
+        .drop-zone.dragover {
+            background-color: #e3f2fd;
+        }
 
-      .drop-zone.dragover {
-        background-color: #f0f0f0;
-      }
+        .drop-zone h1 {
+            font-size: 24px;
+            margin: 10px 0;
+        }
+
+        .file-input {
+            visibility: hidden;
+            position: absolute;
+        }
+
+        .submit-btn {
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+
+        .submit-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .info-text {
+            margin-top: 20px;
+            font-size: 14px;
+        }
     </style>
-  </head>
-  <body>
-    <h1>Remove Background</h1>
+</head>
+<body>
     <div id="dropZone" class="drop-zone">
-      <form
-        id="uploadForm"
-        action="/"
-        method="post"
-        enctype="multipart/form-data"
-      >
-        <input id="fileInput" type="file" name="file" />
-        <input type="submit" value="rm" />
-      </form>
+        <h1>Remove Background</h1>
+        <p class="info-text">Click here or drag a file to upload</p>
+        <form id="uploadForm" action="/" method="post" enctype="multipart/form-data">
+            <input id="fileInput" type="file" name="file" class="file-input" />
+            <input type="submit" value="Upload" class="submit-btn" />
+        </form>
     </div>
 
     <script>
-      let dropZone = document.getElementById("dropZone");
-      let fileInput = document.getElementById("fileInput");
-      let uploadForm = document.getElementById("uploadForm");
+        let dropZone = document.getElementById("dropZone");
+        let fileInput = document.getElementById("fileInput");
 
-      dropZone.addEventListener("click", function () {
-        fileInput.click();
-      });
+        dropZone.addEventListener("click", function () {
+            fileInput.click();
+        });
 
-      fileInput.addEventListener("change", function () {
-        if (fileInput.files.length > 0) {
-          uploadForm.submit();
-        }
-      });
+        fileInput.addEventListener("change", function () {
+            if (this.files.length > 0) {
+                let fileName = document.createElement("p");
+                fileName.textContent = `File selected: ${this.files[0].name}`;
+                fileName.className = "info-text";
+                dropZone.appendChild(fileName);
+                // Optional: Automatically submit form here or provide feedback
+            }
+        });
 
-      dropZone.addEventListener("dragover", function (e) {
-        this.classList.add("dragover");
-      });
+        dropZone.addEventListener("dragover", function (e) {
+            e.preventDefault();
+            this.classList.add("dragover");
+        });
 
-      dropZone.addEventListener("dragleave", function (e) {
-        this.classList.remove("dragover");
-      });
+        dropZone.addEventListener("dragleave", function (e) {
+            this.classList.remove("dragover");
+        });
 
-      dropZone.addEventListener("drop", function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        this.classList.remove("dragover");
+        dropZone.addEventListener("drop", function (e) {
+            e.preventDefault();
+            this.classList.remove("dragover");
 
-        let file = e.dataTransfer.files[0];
-        fileInput.files = e.dataTransfer.files;
-        uploadForm.submit();
-      });
+            let files = e.dataTransfer.files;
+            fileInput.files = files;
+
+            let fileName = document.createElement("p");
+            fileName.textContent = `File selected: ${files[0].name}`;
+            fileName.className = "info-text";
+            dropZone.appendChild(fileName);
+            // Optional: Automatically submit form here or provide feedback
+        });
     </script>
-  </body>
+</body>
 </html>
