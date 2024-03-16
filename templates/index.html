@@ -65,15 +65,22 @@
             margin-top: 20px;
             font-size: 14px;
         }
+        .image-preview {
+            margin-top: 20px;
+            max-width: 100%; /* Ensures image is not larger than its container */
+            max-height: 200px; /* Limits the image preview size */
+            border: 2px solid #007bff; /* Gives the image preview a border */
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
+    <h1>Remove Background</h1>
     <div id="dropZone" class="drop-zone">
-        <h1>Remove Background</h1>
         <p class="info-text">Click here or drag a file to upload</p>
         <form id="uploadForm" action="/" method="post" enctype="multipart/form-data">
             <input id="fileInput" type="file" name="file" class="file-input" />
-            <input type="submit" value="Upload" class="submit-btn" />
+            <input type="submit" value="Submit" class="submit-btn" />
         </form>
     </div>
 
@@ -117,6 +124,36 @@
             dropZone.appendChild(fileName);
             // Optional: Automatically submit form here or provide feedback
         });
+
+        // Show Image 
+        document.addEventListener("DOMContentLoaded", function() {
+  // Hide the submit button initially
+  document.querySelector(".submit-btn").style.visibility = 'hidden';
+
+  fileInput.addEventListener("change", function() {
+    if (this.files.length > 0) {
+      // Show the submit button when a file is selected
+      document.querySelector(".submit-btn").style.visibility = 'visible';
+
+      // Display image preview
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const imgPreview = document.createElement("img");
+        imgPreview.src = e.target.result;
+        imgPreview.className = "image-preview";
+        dropZone.innerHTML = ''; // Clear the drop zone
+        dropZone.appendChild(imgPreview); // Add the image preview
+      };
+      reader.readAsDataURL(this.files[0]);
+
+      // Optional: Change the button text to "Submit"
+      document.querySelector(".submit-btn").value = "Submit";
+    }
+  });
+
+  // Optional: Clear preview or reset form upon successful upload
+  // This part depends on how you handle the file download response and may need adjustment
+});
     </script>
 </body>
 </html>
