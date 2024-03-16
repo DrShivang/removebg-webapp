@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, send_file
 from rembg import remove
 from PIL import Image
 from io import BytesIO
+import os
 
 app = Flask(__name__)
 
@@ -19,8 +20,13 @@ def upload_file():
             img_io = BytesIO()
             output_image.save(img_io, 'PNG')
             img_io.seek(0)
-            # return send_file(img_io, mimetype='image/png')  # Change download in separatre browser tab
-            return send_file(img_io, mimetype='image/png', as_attachment=True, download_name='_rmbg.png')
+
+            # Extracting the original file name without the extension
+            filename_without_ext = os.path.splitext(file.filename)[0]
+            # Constructing the new file name by appending a custom suffix
+            new_filename = f"{filename_without_ext}_rmbg.png"
+
+            return send_file(img_io, mimetype='image/png', as_attachment=True, download_name=new_filename)
     return render_template('index.html')
 
 if __name__ == '__main__':
